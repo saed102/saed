@@ -1,5 +1,6 @@
-
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:courseflutter/provider/home_cubit.dart';
+import 'package:courseflutter/provider/login_cubit/login_cubit.dart';
 import 'package:flutter/material.dart';
 
 class ProductsCartItem extends StatefulWidget {
@@ -14,19 +15,46 @@ class ProductsCartItem extends StatefulWidget {
   State<ProductsCartItem> createState() => _ProductsCartItemState();
 }
 
-class _ProductsCartItemState extends State<ProductsCartItem> {
+class _ProductsCartItemState extends State<ProductsCartItem>
+{
   late TextEditingController controller;
 
   @override
   void initState() {
+
     controller = TextEditingController()
       ..text = widget.cartProduct["quantity"].toString();
     super.initState();
   }
 
+  bool isLoading = false;
+
+  delete(id) {
+    setState(() {
+      isLoading = true;
+    });
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(LoginCubit.get(context).user!.uid)
+        .collection("card")
+        .doc(id)
+        .delete()
+        .then((value) {})
+        .then((value)async {
+
+         await HomeCubit.get(context).getProducts();
+      setState(() {
+        isLoading = false;
+      });
+    }).catchError((onError) {
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return Container(
       height: 85,
       width: MediaQuery.of(context).size.width,
@@ -75,6 +103,14 @@ class _ProductsCartItemState extends State<ProductsCartItem> {
             ),
           ),
           const SizedBox(width: 10),
+          isLoading?CircularProgressIndicator(color: Colors.orange,):
+          IconButton(
+            onPressed: () {
+              delete(widget.cartProduct["id"]);
+            },
+            icon: Icon(Icons.delete),
+            color: Colors.red,
+          )
         ],
       ),
     );
