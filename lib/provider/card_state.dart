@@ -1,6 +1,6 @@
 part of 'card_cubit.dart';
 
-@immutable
+
 abstract class CardState {}
 
 class CardInitial extends CardState {}

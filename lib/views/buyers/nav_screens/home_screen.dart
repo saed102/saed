@@ -16,7 +16,7 @@ class HomeScreen extends StatelessWidget {
       create: (context) => HomeCubit()..getProducts(),
       child: BlocConsumer<HomeCubit, HomeState>(
         listener: (context, state) {
-          
+
         },
         builder: (context, state) {
           return Column(
