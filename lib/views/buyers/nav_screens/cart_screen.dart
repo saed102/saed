@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:courseflutter/provider/login_cubit/login_cubit.dart';
-import 'package:courseflutter/utils/show.snackBar.dart';
+
 import 'package:courseflutter/views/buyers/nav_screens/cash_out_screen.dart';
 import 'package:courseflutter/views/buyers/nav_screens/widgets/productCardItem.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 
 class CartScreen extends StatefulWidget {
@@ -27,7 +27,7 @@ class _CartScreenState extends State<CartScreen> {
     final FirebaseFirestore _firestore = FirebaseFirestore.instance;
     await _firestore
         .collection('users')
-        .doc("uaryuEYmlMh1h14u1vS5P27w5DZ2")
+        .doc(LoginCubit.get(context).user!.uid)
         .collection("card")
         .get()
         .then((value) {
