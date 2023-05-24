@@ -6,7 +6,8 @@ import '../../../../utils/show.snackBar.dart';
 import 'add_to_card.dart';
 
 class Products extends StatefulWidget {
-  const Products({Key? key}) : super(key: key);
+  const Products({Key? key,required this.product}) : super(key: key);
+ final List product ;
 
   @override
   State<Products> createState() => _ProductsState();
@@ -17,27 +18,9 @@ class _ProductsState extends State<Products> {
   bool isCardLoading = false;
   int selectedIndex = -1;
 
-  List _products = [];
 
-  _getProducts() async {
-    setState(() {
-      isLoading = true;
-    });
-    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-    await _firestore.collection('products').get().then((value) {
-      _products.clear();
-      value.docs.forEach((element) {
-        _products.add(element.data());
-      });
-      setState(() {
-        isLoading = false;
-      });
-    }).catchError((e) {
-      setState(() {
-        isLoading = false;
-      });
-    });
-  }
+
+
   _addToCard(id) async {
     setState(() {
       isCardLoading = true;
@@ -49,7 +32,7 @@ class _ProductsState extends State<Products> {
         .doc(LoginCubit.get(context).user!.uid)
         .collection("card")
         .add({
-      "product": _products[id - 1],
+      "product": widget.product[id - 1],
       "quantity": "1",
       "user_id": LoginCubit.get(context).user!.uid
     }).then((value) {
@@ -70,7 +53,7 @@ class _ProductsState extends State<Products> {
 
   @override
   void initState() {
-    _getProducts();
+
     super.initState();
   }
 
@@ -85,7 +68,7 @@ class _ProductsState extends State<Products> {
           child: CircularProgressIndicator(
         color: Colors.orange,
       ));
-    } else if (_products.isNotEmpty && isLoading == false) {
+    } else if (widget.product.isNotEmpty && isLoading == false) {
       return Padding(
         padding: const EdgeInsets.only(right: 15.0, left: 15),
         child: GridView.builder(
@@ -98,13 +81,13 @@ class _ProductsState extends State<Products> {
             mainAxisSpacing: 20,
             childAspectRatio: 9 / 15,
           ),
-          itemCount: _products.length,
+          itemCount: widget.product.length,
           itemBuilder: (context, index) {
             return _buildProductItem(index);
           },
         ),
       );
-    } else if (_products.isEmpty && isLoading == false) {
+    } else if (widget.product.isEmpty && isLoading == false) {
       return Center(child: Text("No data "));
     } else {
       return SizedBox();
@@ -122,7 +105,7 @@ class _ProductsState extends State<Products> {
             Expanded(
               child: Center(
                 child: Image.network(
-                  _products[index]["image"][0] ?? "",
+                  widget.product[index]["image"][0] ?? "",
                   fit: BoxFit.cover,
                 ),
               ),
@@ -132,20 +115,20 @@ class _ProductsState extends State<Products> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _products[index]["name"] ?? "non",
+                  widget.product[index]["name"] ?? "non",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  _products[index]["discretion"] ?? "non",
+                  widget.product[index]["discretion"] ?? "non",
                   style: TextStyle(fontSize: 14, color: Colors.grey),
                 ),
                 Wrap(
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     Text(
-                      _products[index]["price"].toString() ?? "",
+                      widget.product[index]["price"].toString() ?? "",
                       style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,

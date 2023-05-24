@@ -2,6 +2,7 @@ import 'package:courseflutter/provider/home_cubit.dart';
 
 import 'package:courseflutter/views/buyers/nav_screens/widgets/banner_widget.dart';
 import 'package:courseflutter/views/buyers/nav_screens/widgets/category_text.dart';
+import 'package:courseflutter/views/buyers/nav_screens/widgets/product.dart';
 import 'package:courseflutter/views/buyers/nav_screens/widgets/search_input_widget.dart';
 import 'package:courseflutter/views/buyers/nav_screens/widgets/welcome_text_wedget.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,7 @@ class HomeScreen extends StatelessWidget {
                       if(state is Loading)
                         CircularProgressIndicator(),
                       if(state is Loaded)
-                      // Products(products: state.product),
+                       Products(product: state.product),
                       SizedBox(
                         height: 15,
                       ),
